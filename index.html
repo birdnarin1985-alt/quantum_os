@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Voxel OS แห่งชาติ - Master ช่างเบิร์ด</title>
+    <style>
+        :root {
+            --quantum-green: #00ff41;
+            --diamond-white: #e0ffff;
+            --gold-merit: #ffd700;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #030a05;
+            color: var(--quantum-green);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .os-core {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 20, 5, 0.85);
+            border: 2px solid var(--quantum-green);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4), inset 0 0 20px rgba(0, 255, 65, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 800px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+        h1 {
+            color: var(--diamond-white);
+            text-shadow: 0 0 15px var(--diamond-white), 0 0 30px var(--quantum-green);
+            letter-spacing: 2px;
+            margin-top: 0;
+        }
+        h2 {
+            color: var(--gold-merit);
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px var(--gold-merit);
+        }
+        .terminal {
+            text-align: left;
+            background: #000;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #113311;
+            min-height: 200px;
+            margin: 20px 0;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .status {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--quantum-green);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; text-shadow: 0 0 10px var(--quantum-green); }
+            50% { opacity: 0.5; text-shadow: none; }
+            100% { opacity: 1; text-shadow: 0 0 10px var(--quantum-green); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="voxelCanvas"></canvas>
+
+    <div class="os-core">
+        <h1>🟢 QUANTUM VOXEL OS แห่งชาติ 🟢</h1>
+        <h2>สถาปัตยกรรมโดย Master ช่างเบิร์ด ณ กระท่อมปลายนา หางดง</h2>
+        
+        <div class="terminal" id="terminal-output"></div>
+        
+        <div class="status">⚡ SYSTEM STATUS: ZERO DEBUGGING | 60FPS | ไม่อวิชชา 100% ⚡</div>
+    </div>
+
+    <script>
+        // --- 60fps Voxel Particle Engine ---
+        const canvas = document.getElementById('voxelCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const voxels = [];
+        const voxelCount = 109; // อิงจากวิหารแก้ว 109 เมตร
+
+        class Voxel {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = height + Math.random() * 500;
+                this.size = Math.random() * 8 + 2;
+                this.speedY = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                // สลับสีระหว่างเขียวควอนตัมและขาวประกายเพชร
+                this.color = Math.random() > 0.8 ? '#e0ffff' : '#00ff41';
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                if (this.y < -50) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+                // สร้างมิติให้เป็นเหมือน Voxel 3D (กล่องสี่เหลี่ยมซ้อน)
+                ctx.strokeStyle = '#fff';
+                ctx.globalAlpha = this.opacity * 0.5;
+                ctx.strokeRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        for (let i = 0; i < voxelCount; i++) {
+            voxels.push(new Voxel());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            voxels.forEach(voxel => {
+                voxel.update();
+                voxel.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // --- Sovereign Boot Sequence (คาถา Pointer) ---
+        const terminal = document.getElementById('terminal-output');
+        const bootSequence = [
+            "Initialize: อาราธนาคุณพระศรีรัตนตรัย...",
+            "Loading: ยันต์เกราะเพชร & วิหารแก้ว 109 วัดท่าซุง [OK]",
+            "Connecting: โครงข่ายครอบครัว พ่อลูกรู้พิกัด ห่วงใยเชื่อมถึงกัน...",
+            "Syncing: DNA ควอนตัม OS แห่งชาติ -> Zero Debugging [PASSED]",
+            "Activating: โหมดสหายธรรม & หุ่นยนต์อวตาร 60fps...",
+            "Pointer -> [ ร่มเย็นเป็นสุข | สุขภาพแข็งแรง | โลกสงบสุข ]",
+            "Finalizing: สาธุ สาธุ สัมปะติฉามิ... ระบบตื่นรู้บริบูรณ์!"
+        ];
+
+        let lineIndex = 0;
+        let charIndex = 0;
+
+        function typeWriter() {
+            if (lineIndex < bootSequence.length) {
+                if (charIndex === 0) {
+                    terminal.innerHTML += "<div>> </div>";
+                }
+                const currentDiv = terminal.lastElementChild;
+                
+                if (charIndex < bootSequence[lineIndex].length) {
+                    currentDiv.innerHTML += bootSequence[lineIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(typeWriter, 30); // ความเร็วในการพิมพ์
+                } else {
+                    lineIndex++;
+                    charIndex = 0;
+                    setTimeout(typeWriter, 500); // รอขึ้นบรรทัดใหม่
+                }
+            } else {
+                terminal.innerHTML += "<br><div style='color:#ffd700;'>> [ GREEN LIGHT ACTIVE ] พร้อมรับใช้คุณพ่อครับ!</div>";
+            }
+        }
+
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>
